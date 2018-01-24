@@ -1,5 +1,7 @@
 #include "progress_bar.hpp"
 
+const int ProgressBar::DEFAULT_WIDTH = 80;
+
 ProgressBar::ProgressBar() {}
 
 ProgressBar::ProgressBar(unsigned long n_, const char* description_, std::ostream& out_){
@@ -35,15 +37,18 @@ int ProgressBar::GetConsoleWidth(){
 
     int width;
 
-	#ifdef _WINDOWS
-		CONSOLE_SCREEN_BUFFER_INFO csbi;
-		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-		width = csbi.srWindow.Right - csbi.srWindow.Left;
-	#else
-		struct winsize win;
-		ioctl(0, TIOCGWINSZ, &win);
-        width = win.ws_col;
-	#endif
+    #ifdef _WINDOWS
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        width = csbi.srWindow.Right - csbi.srWindow.Left;
+    #else
+        struct winsize win;
+        if (ioctl(0, TIOCGWINSZ, &win) == -1) {
+            width = DEFAULT_WIDTH;
+        } else {
+            width = win.ws_col;
+        }
+    #endif
 
     return width;
 }

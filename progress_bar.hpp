@@ -18,6 +18,8 @@ class ProgressBar{
 
 public: 
 
+    const static int DEFAULT_WIDTH;
+
     ProgressBar();
     ProgressBar(unsigned long n_, const char *description_="", std::ostream& out_=std::cerr);
 
